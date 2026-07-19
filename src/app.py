@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route('/api/v1/details')
 def info():
     return jsonify({
-        "service":"backstage ",
+        "service":"backstage",
         "version":"2.0.0",
         "time": datetime.datetime.now().isoformat(),
         "hostname": socket.gethostname(),
