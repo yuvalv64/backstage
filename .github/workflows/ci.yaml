@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - src/**
+      - Dockerfile
+      - requirements.txt
+      - .github/workflows/ci.yaml
     branches:
       - main
 
@@ -11,10 +14,13 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Login to Docker Hub
         uses: docker/login-action@v4
         with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
+          username: yuvalv
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v7
