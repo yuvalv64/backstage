@@ -9,7 +9,7 @@ app = Flask(__name__)
 def info():
     return jsonify({
         "service":"backstage",
-        "version":"1.0.0",
+        "version":"2.0.0",
         "time": datetime.datetime.now().isoformat(),
         "hostname": socket.gethostname(),
         "deployed_on": "K8S",
