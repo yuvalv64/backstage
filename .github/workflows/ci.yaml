@@ -10,6 +10,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -18,10 +21,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Declare variables
         id: vars
         shell: bash
@@ -37,6 +42,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -50,24 +56,50 @@ jobs:
       - name: Declare variables
         shell: bash
         run: |
-          echo ${{ needs.ci.outputs.commit_id }}
+          echo "Deploying commit: ${{ needs.ci.outputs.commit_id }}"
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Update values.yaml image tag
+        shell: bash
+        run: |
+          python -c "
+          with open('charts/python-app/values.yaml', 'r') as f:
+              lines = f.readlines()
+          for i, line in enumerate(lines):
+              if line.strip().startswith('tag:'):
+                  lines[i] = '  tag: \"${{ needs.ci.outputs.commit_id }}\"\n'
+          with open('charts/python-app/values.yaml', 'w') as f:
+              f.writelines(lines)
+          "
+
+      - name: Commit and push changes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add charts/python-app/values.yaml
+          git commit -m "chore: update image tag to ${{ needs.ci.outputs.commit_id }} [skip ci]"
+          git push
+
       - name: install argocd
         run: |
           curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
           chmod +x argocd-linux-amd64
           sudo mv argocd-linux-amd64 /usr/local/bin/argocd
+
       - name: Login to ArgoCD
         shell: bash
         run: |
           argocd login argocd-server.argocd \
           --insecure --grpc-web \
-          --username admin --password \
-          ${{ secrets.ARGO_PASSWORD }}
+          --username admin --password ${{ secrets.ARGO_PASSWORD }}
+
       - name: Sync ArgoCD app
         run: argocd app sync python-app
