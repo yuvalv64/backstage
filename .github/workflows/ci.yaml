@@ -41,10 +41,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Declare variables
-        shell: bash
+      - name: install argocd
         run: |
-          echo "COMMIT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+          curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x argocd-linux-amd64
+          sudo mv argocd-linux-amd64 /usr/local/bin/argocd
       - name: Login to ArgoCD
         shell: bash
         run: |
