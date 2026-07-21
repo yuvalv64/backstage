@@ -113,11 +113,19 @@ catalog:
     - type: file
       target: C:\Projects\Backstage\backstage\catalog-info.yaml
 
+    - type: file
+      target: C:\Projects\Backstage\backstage\my-bank-app\templates\spring-boot-template\template.yaml
+      rules:
+        - allow: [Template]
     # Local example template
     - type: file
       target: ../../examples/template/template.yaml
       rules:
         - allow: [Template]
+    - type: file
+      target: C:/Projects/Backstage/backstage/my-bank-app/templates/spring-boot-template/skeleton/catalog-info.yaml
+      rules:
+        - allow: [Component, System, API]
 
     # Local example organizational data
     - type: file

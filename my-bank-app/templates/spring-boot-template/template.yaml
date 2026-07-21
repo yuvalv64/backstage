@@ -1,0 +1,58 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: spring-boot-service-template
+  title: Spring Boot Microservice
+  description: Create a standardized Spring Boot 3 service
+  tags:
+    - java
+    - spring-boot
+    - hapoalim
+spec:
+  owner: group:banking-team
+  type: service
+
+  parameters:
+    - title: Service Information
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Name of the microservice (e.g., loan-service)
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: Short description of the service
+        owner:
+          title: Owner
+          type: string
+          default: group:banking-team
+
+  steps:
+    # 1. טעינת ה-Skeleton והחלפת משתנים
+    - id: fetch-base
+      name: Fetch Skeleton
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+
+    # 2. הדפסת הודעת סיום מוצלחת ליומן (Built-in action)
+    - id: log-success
+      name: Log Summary
+      action: debug:log
+      input:
+        message: "Successfully generated project ${{ parameters.name }}!"
+
+  output:
+    links:
+      - title: Open Catalog
+        icon: catalog
+        url: /catalog
