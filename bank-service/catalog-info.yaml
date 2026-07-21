@@ -1,0 +1,30 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: account-service
+  description: "Microservice for managing customer bank accounts"
+  annotations:
+    # קישור לתיעוד ה-Swagger המשתחרר מהסרוויס
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - java
+    - spring-boot
+    - core-banking
+spec:
+  type: service
+  lifecycle: production
+  owner: group:banking-team
+  providesApis:
+    - account-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: account-api
+  description: "REST API for Account operations"
+spec:
+  type: openapi
+  lifecycle: production
+  owner: group:banking-team
+  definition:
+    $text: http://localhost:8080/v3/api-docs
