@@ -25,6 +25,6 @@ metadata:
 spec:
   type: openapi
   lifecycle: production
-  owner: group:banking-team
+  owner: banking-team
   definition:
     $text: http://localhost:8081/api-docs
