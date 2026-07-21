@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: banking-team
+  description: The backstage banking-team
+spec:
+  type: sub-department
+  profile:
+    displayName: Backstage
+    email: backstage@example.com
+    picture: https://api.dicebear.com/7.x/identicon/svg?seed=Fluffy&backgroundColor=ffdfbf
+  children: []
